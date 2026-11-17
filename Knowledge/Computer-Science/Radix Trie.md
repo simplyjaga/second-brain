@@ -160,7 +160,7 @@ Not covered in the session — high level: remove the `is_end` flag, delete a le
 
 ## Practice
 
-- Visualizer: [[radix_visualizer_v2.html]] (open the file in a browser — step through insertions to watch splits happen)
+- Visualizer: `Attachments/radix_visualizer_v2.html` — file lives in this vault; open it in a browser (not Obsidian) to step through insertions and watch edge splits happen.
 
 ## Important details
 
