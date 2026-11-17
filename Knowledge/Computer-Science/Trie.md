@@ -81,7 +81,11 @@ With the **pointer approach** you fix the pointer per case — same logic, just 
 
 ## Related concepts
 
+- [[Radix Trie]] — compressed trie; merges single-child chains
+
 ## Collections
+
+- [[Redis Internals]]
 
 ## Sources
 
@@ -90,4 +94,4 @@ With the **pointer approach** you fix the pointer per case — same logic, just 
 
 ## Questions / Things to revisit
 
-- Compressed/radix tries — merging single-child chains (used in real systems like Redis rax).
+- Where else radix tries show up (Redis rax, IP routing tables).

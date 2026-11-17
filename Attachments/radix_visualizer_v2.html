@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Radix tree insert visualizer</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; padding: 16px; background: #fff; color: #111; }
+  h1 { font-size: 20px; font-weight: 500; margin: 0 0 12px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; }
+  input[type=text] { width: 140px; padding: 6px 8px; font-size: 14px; border: 1px solid #9ca3af; border-radius: 6px; }
+  button { padding: 6px 12px; font-size: 14px; border: 1px solid #9ca3af; border-radius: 6px; background: #f9fafb; cursor: pointer; }
+  button:hover { background: #e5e7eb; }
+  button:disabled { opacity: 0.4; cursor: default; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  @media (max-width: 720px) { .grid { grid-template-columns: 1fr; } }
+  .panel { border: 1px solid #d1d5db; border-radius: 10px; padding: 10px 12px; min-width: 0; }
+  h4 { margin: 0 0 6px; font-size: 14px; font-weight: 600; }
+  .code { font-family: ui-monospace, monospace; font-size: 13px; background: #f9fafb; border-radius: 8px; padding: 6px 0; overflow-x: auto; }
+  .ln { padding: 1px 10px; white-space: pre; }
+  .ln.cur { background: #fde68a; font-weight: 600; }
+  table { width: 100%; font-size: 13px; border-collapse: collapse; }
+  td { padding: 3px 0; border-bottom: 1px solid #e5e7eb; }
+  td:first-child { color: #4b5563; width: 70px; font-family: ui-monospace, monospace; }
+  td:last-child { font-family: ui-monospace, monospace; }
+  .note { font-size: 14px; color: #374151; margin: 8px 0; min-height: 20px; }
+  .mem { font-family: ui-monospace, monospace; font-size: 12px; line-height: 1.7; color: #374151; word-break: break-word; }
+  .legend { font-size: 12px; color: #4b5563; display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
+  .sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; border: 1px solid #6b7280; }
+  #tree { overflow-x: auto; }
+  #counter { font-size: 14px; color: #4b5563; }
+</style>
+</head>
+<body>
+<h1>Radix tree insert visualizer</h1>
+
+<div class="row">
+  <input type="text" id="w" value="romulus" aria-label="Word to insert">
+  <button id="ins">Insert</button>
+  <button id="reset">Reset tree</button>
+  <span style="width:8px"></span>
+  <button class="pre" data-w="romane">romane</button>
+  <button class="pre" data-w="romanus">romanus</button>
+  <button class="pre" data-w="romulus">romulus</button>
+  <button class="pre" data-w="rubens">rubens</button>
+</div>
+
+<div class="row">
+  <button id="prev">Prev</button>
+  <button id="next">Next</button>
+  <button id="play">Play</button>
+  <span id="counter">Idle</span>
+</div>
+
+<div class="grid">
+  <div class="panel">
+    <h4>insert() in Python</h4>
+    <div class="code" id="code"></div>
+  </div>
+  <div class="panel">
+    <h4>Variables after this line</h4>
+    <table id="vars"></table>
+    <div class="note" id="note"></div>
+    <h4>Node memory</h4>
+    <div class="mem" id="mem"></div>
+  </div>
+</div>
+
+<div class="panel">
+  <h4>Radix tree</h4>
+  <div class="legend">
+    <span><span class="sw" style="background:#fde68a"></span>node (current)</span>
+    <span><span class="sw" style="background:#bfdbfe"></span>child</span>
+    <span><span class="sw" style="background:#bbf7d0"></span>mid (new split node)</span>
+  </div>
+  <div id="tree"></div>
+</div>
+
+<script>
+const CODE = [
+  "def insert(self, word):",
+  "    node = self.root; i = 0",
+  "    while i < len(word):",
+  "        c = word[i]; rest = word[i:]; child = mid = None",
+  "        if c not in node.children:",
+  "            node.children[c] = RadixNode(rest, is_end=True); return",
+  "        child = node.children[c]; j = common_prefix_len(child.prefix, rest)",
+  "        if j == len(child.prefix):",
+  "            node = child; i += j; continue",
+  "        mid = RadixNode(child.prefix[:j])",
+  "        child.prefix = child.prefix[j:]",
+  "        mid.children[child.prefix[0]] = child",
+  "        node.children[c] = mid",
+  "        node = mid; i += j",
+  "    node.is_end = True"
+];
+
+const esc = s => String(s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+let idc = 0;
+const mk = (prefix = '') => ({ id: ++idc, prefix, isEnd: false, children: new Map() });
+const clone = n => {
+  const m = { id: n.id, prefix: n.prefix, isEnd: n.isEnd, children: new Map() };
+  for (const [k, v] of n.children) m.children.set(k, clone(v));
+  return m;
+};
+const cpl = (a, b) => { let i = 0; while (i < a.length && i < b.length && a[i] === b[i]) i++; return i; };
+const findById = (n, id) => {
+  if (!n || id == null) return null;
+  if (n.id === id) return n;
+  for (const c of n.children.values()) { const r = findById(c, id); if (r) return r; }
+  return null;
+};
+
+let base = mk(), steps = [], idx = 0, timer = null;
+
+function buildSteps(word) {
+  const T = clone(base), out = [];
+  let node = T, i = 0, c = null, rest = null, child = null, j = null, mid = null;
+  const lbl = n => n ? (n.prefix ? '"' + n.prefix + '"' : 'root') : '—';
+  const rec = (line, note) => out.push({
+    line, note, tree: clone(T),
+    vars: {
+      node: lbl(node), i: String(i),
+      c: c === null ? '—' : "'" + c + "'",
+      rest: rest === null ? '—' : '"' + rest + '"',
+      child: lbl(child), j: j === null ? '—' : String(j), mid: lbl(mid)
+    },
+    hi: { node: node.id, child: child ? child.id : null, mid: mid ? mid.id : null }
+  });
+
+  rec(1, 'Start at the root. i = 0 means no characters matched yet.');
+  while (i < word.length) {
+    rec(2, 'Characters are left to match, since i < len(word).');
+    c = word[i]; rest = word.slice(i); child = null; j = null; mid = null;
+    rec(3, 'Take the next character as the key, and the unmatched rest of the word.');
+    if (!node.children.has(c)) {
+      rec(4, "No edge starts with '" + c + "', so this is Case 1.");
+      const leaf = mk(rest); leaf.isEnd = true; node.children.set(c, leaf); child = leaf;
+      rec(5, 'Add a leaf holding the whole rest. The word ends here, so we are done.');
+      return { steps: out, tree: T };
+    }
+    child = node.children.get(c);
+    j = cpl(child.prefix, rest);
+    rec(6, 'Compare the child edge with rest. j is the number of matching characters.');
+    if (j === child.prefix.length) {
+      node = child; i += j;
+      rec(8, 'The whole edge matched (Case 2). Walk into it and skip j characters.');
+      continue;
+    }
+    mid = mk(child.prefix.slice(0, j));
+    rec(9, 'Partial match (Case 3). Create a mid node for the shared part.');
+    child.prefix = child.prefix.slice(j);
+    rec(10, 'The old child keeps only the leftover label.');
+    mid.children.set(child.prefix[0], child);
+    rec(11, "Hang the old child under mid, keyed by '" + child.prefix[0] + "'.");
+    node.children.set(c, mid);
+    rec(12, 'The parent now points to mid instead of the old child.');
+    node = mid; i += j;
+    rec(13, 'Continue from mid. i has advanced by j.');
+  }
+  node.isEnd = true;
+  rec(14, 'Loop finished. Mark the current node as a word end.');
+  return { steps: out, tree: T };
+}
+
+function drawTree(root, hi) {
+  const W = 130, GY = 80, BH = 34;
+  const leaves = n => n.children.size ? [...n.children.values()].reduce((a, c) => a + leaves(c), 0) : 1;
+  const pos = new Map(); let maxD = 0;
+  function place(n, d, x0) {
+    maxD = Math.max(maxD, d);
+    if (!n.children.size) { pos.set(n.id, { x: x0 + W / 2, d }); return; }
+    let x = x0; const xs = [];
+    for (const c of n.children.values()) { place(c, d + 1, x); xs.push(pos.get(c.id).x); x += leaves(c) * W; }
+    pos.set(n.id, { x: (xs[0] + xs[xs.length - 1]) / 2, d });
+  }
+  place(root, 0, 0);
+  const total = Math.max(leaves(root) * W, 300), H = (maxD + 1) * GY + 30;
+  const top = d => 12 + d * GY;
+  let svg = '<svg width="' + total + '" height="' + H + '" viewBox="0 0 ' + total + ' ' + H + '" font-family="monospace" font-size="13">';
+  const nodes = [];
+  (function walk(n) {
+    nodes.push(n);
+    for (const [k, c] of n.children) {
+      const a = pos.get(n.id), b = pos.get(c.id);
+      const x1 = a.x, y1 = top(a.d) + BH, x2 = b.x, y2 = top(b.d);
+      svg += '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke="#6b7280" stroke-width="1"/>';
+      svg += '<text x="' + ((x1 + x2) / 2 + 6) + '" y="' + ((y1 + y2) / 2) + '" fill="#4b5563">' + esc(k) + '</text>';
+      walk(c);
+    }
+  })(root);
+  for (const n of nodes) {
+    const p = pos.get(n.id);
+    const fill = n.id === hi.node ? '#fde68a' : n.id === hi.child ? '#bfdbfe' : n.id === hi.mid ? '#bbf7d0' : '#f3f4f6';
+    svg += '<rect x="' + (p.x - 55) + '" y="' + top(p.d) + '" width="110" height="' + BH + '" rx="8" fill="' + fill + '" stroke="#6b7280" stroke-width="0.5"/>';
+    svg += '<text x="' + p.x + '" y="' + (top(p.d) + 22) + '" text-anchor="middle" fill="#111">' + esc(n.prefix || 'root') + '</text>';
+    if (n.isEnd) svg += '<text x="' + p.x + '" y="' + (top(p.d) + BH + 13) + '" text-anchor="middle" fill="#15803d" font-size="11">word end</text>';
+  }
+  svg += '</svg>';
+  document.getElementById('tree').innerHTML = svg;
+}
+
+function fmt(n) {
+  if (!n) return '—';
+  const ch = [...n.children].map(([k, v]) => "'" + k + "': " + JSON.stringify(v.prefix)).join(', ');
+  return 'prefix=' + esc(JSON.stringify(n.prefix)) + '  is_end=' + n.isEnd + '<br>children={' + esc(ch) + '}';
+}
+
+function render() {
+  const has = steps.length > 0, s = has ? steps[idx] : null;
+  const tree = s ? s.tree : base;
+  document.getElementById('code').innerHTML = CODE.map((t, k) =>
+    '<div class="ln' + (s && s.line === k ? ' cur' : '') + '">' + (esc(t) || '&nbsp;') + '</div>').join('');
+  const rows = s ? [['node', s.vars.node], ['i', s.vars.i], ['c', s.vars.c], ['rest', s.vars.rest], ['child', s.vars.child], ['j', s.vars.j], ['mid', s.vars.mid]] : [];
+  document.getElementById('vars').innerHTML = s
+    ? rows.map(([k, v]) => '<tr><td>' + k + '</td><td>' + esc(v) + '</td></tr>').join('')
+    : '<tr><td>—</td><td>No operation yet</td></tr>';
+  document.getElementById('note').textContent = s ? s.note : 'Press Insert or a preset word to start.';
+  document.getElementById('counter').textContent = has ? 'Step ' + (idx + 1) + ' of ' + steps.length : 'Idle';
+  let memHtml;
+  if (s) {
+    const nn = findById(tree, s.hi.node), cc = findById(tree, s.hi.child), mm = findById(tree, s.hi.mid);
+    memHtml = '<b>node</b>: ' + fmt(nn);
+    if (cc) memHtml += '<br><b>child</b>: ' + fmt(cc);
+    if (mm) memHtml += '<br><b>mid</b>: ' + fmt(mm);
+  } else {
+    memHtml = 'root: ' + fmt(base);
+  }
+  document.getElementById('mem').innerHTML = memHtml;
+  drawTree(tree, s ? s.hi : {});
+  document.getElementById('prev').disabled = !has || idx === 0;
+  document.getElementById('next').disabled = !has || idx >= steps.length - 1;
+}
+
+function stopPlay() {
+  if (timer) { clearInterval(timer); timer = null; }
+  document.getElementById('play').textContent = 'Play';
+}
+
+function startInsert(w) {
+  if (!w) return;
+  stopPlay();
+  const r = buildSteps(w);
+  base = r.tree; steps = r.steps; idx = 0;
+  render();
+}
+
+document.getElementById('ins').addEventListener('click', () => startInsert(document.getElementById('w').value.trim()));
+document.getElementById('w').addEventListener('keydown', e => { if (e.key === 'Enter') startInsert(e.target.value.trim()); });
+document.querySelectorAll('.pre').forEach(b => b.addEventListener('click', () => startInsert(b.dataset.w)));
+document.getElementById('reset').addEventListener('click', () => { stopPlay(); base = mk(); steps = []; idx = 0; render(); });
+document.getElementById('prev').addEventListener('click', () => { stopPlay(); if (idx > 0) { idx--; render(); } });
+document.getElementById('next').addEventListener('click', () => { stopPlay(); if (idx < steps.length - 1) { idx++; render(); } });
+document.getElementById('play').addEventListener('click', () => {
+  if (timer) { stopPlay(); return; }
+  if (!steps.length) return;
+  if (idx >= steps.length - 1) idx = 0;
+  document.getElementById('play').textContent = 'Pause';
+  timer = setInterval(() => {
+    if (idx < steps.length - 1) { idx++; render(); }
+    else stopPlay();
+  }, 800);
+});
+
+render();
+</script>
+</body>
+</html>

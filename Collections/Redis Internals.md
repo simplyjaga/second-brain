@@ -12,6 +12,9 @@ How Redis works internally — starting from how one server handles many clients
 ## Knowledge concepts
 
 - [[Event Loop]]
+- [[Processes Threads and Cores]]
+- [[Trie]]
+- [[Radix Trie]]
 
 ## Learning resources
 
