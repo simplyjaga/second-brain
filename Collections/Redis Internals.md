@@ -8,6 +8,7 @@ How Redis works internally — starting from how one server handles many clients
 
 - Event-driven networking: blocking → non-blocking → event loop
 - How real servers structure their concurrency (nginx, workers, multiple cores)
+- Protocols and API styles: HTTP vs REST vs RESP, and where TLS fits
 
 ## Knowledge concepts
 
@@ -15,6 +16,11 @@ How Redis works internally — starting from how one server handles many clients
 - [[Processes Threads and Cores]]
 - [[Trie]]
 - [[Radix Trie]]
+- [[Protocol]]
+- [[HTTP]]
+- [[REST]]
+- [[RESP]]
+- [[TLS]]
 
 ## Learning resources
 
