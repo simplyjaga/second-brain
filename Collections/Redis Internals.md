@@ -16,6 +16,7 @@ How Redis works internally — starting from how one server handles many clients
 - [[Processes Threads and Cores]]
 - [[Trie]]
 - [[Radix Trie]]
+- [[Redis Persistence]]
 - [[Protocol]]
 - [[HTTP]]
 - [[REST]]
