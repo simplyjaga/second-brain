@@ -12,7 +12,7 @@ Architecture series on how Redis works internally — networking, event loop, an
 
 ## Useful sections / Timestamps
 
-## Related knowledge and collections
+## Related knowledge and projects
 
 - [[Redis Internals]]
 - [[Event Loop]] 

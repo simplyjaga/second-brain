@@ -83,7 +83,7 @@ With the **pointer approach** you fix the pointer per case — same logic, just 
 
 - [[Radix Trie]] — compressed trie; merges single-child chains
 
-## Collections
+## Projects / Journeys
 
 - [[Redis Internals]]
 

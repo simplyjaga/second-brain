@@ -42,7 +42,7 @@ RDB and AOF are concrete instances of the generic [[Log vs Snapshot]] trade-off 
 - [[Log vs Snapshot]] — the general pattern this note instantiates
 - [[Processes Threads and Cores]] — fork/COW is process-level, not threads
 
-## Collections
+## Projects / Journeys
 
 - [[Redis Internals]]
 

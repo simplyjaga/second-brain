@@ -32,11 +32,10 @@ This vault is **public** on GitHub — never include private information, creden
 
 Keep the structure minimal:
 - `Inbox/`: temporary captures, ideas, questions, and topics.
-- `Collections/`: learning journeys, courses, playlists, books, or broad subjects. Describe scope; link to knowledge and overall resources.
 - `Knowledge/`: consolidated concept explanations. Existing domains are `Computer-Science/`, `Machine-Learning/`, and `Mathematics/`. Add subfolders only for a genuine organizational need.
 - `Resources/`: reusable records of external learning materials, with source URL and author when known.
-- `Projects/`: repository link, short description, purpose, important decisions, related knowledge, and resources. Do not duplicate source code, project documentation, or task tracking.
-- `Templates/`: Concept, Collection, Resource, and Project templates.
+- `Projects/`: one note per context where knowledge is applied or learned — a real repository (repo link, decisions, related knowledge) OR a learning journey (e.g., a course/playlist like Redis Internals: scope, linked concepts, resources). Journey notes act as the hub linking their concepts; do not create a separate Collections layer.
+- `Templates/`: Concept, Resource, and Project templates.
 - `Attachments/`: useful local diagrams, images, screenshots, and PDFs. Do not download every reference.
 
 Do not add Research, Writing, Published, Indexes, or other unnecessary folders. Do not create sample knowledge or invented personal understanding. Do not create unnecessary notes or index pages; navigation notes require a real need. Do not create separate notes for every video, timestamp, or minor question.
@@ -50,14 +49,14 @@ Do not use `/` in note names — Obsidian treats it as a folder separator.
 - Prefer links over duplicated explanations. Use native Obsidian `[[Note Name]]` wikilinks; use path-qualified links only when needed for disambiguation.
 - Explain what a concept is, why it matters, how it works, and important details and examples where useful. Leave genuine open questions visible.
 - Use Markdown tables, code snippets, and math (`$...$` / `$$...$$`) where they aid understanding — worked examples, comparisons, and step-by-step computations read much better in tables than prose. Keep the owner's "Things that confused me" Q&A sections as `> [!question]` callouts.
-- Link related concepts, collections, projects, and sources only when meaningful. Add knowledge links to relevant collections when introducing meaningful new concepts.
+- Link related concepts, projects/journey notes, and sources only when meaningful. Add knowledge links to the relevant journey/project note when introducing meaningful new concepts.
 - Use backlinks and local/global graph for navigation. Never add artificial links just to connect the graph.
 - Keep resource metadata canonical in a Resource note when reuse warrants one. Specific video or timestamp URLs may live directly in a concept's Sources section; avoid redundant resource records.
 - Preserve source attribution. Distinguish sourced claims, the owner's explanations, and unverified suggestions. Do not fabricate citations, URLs, or repository destinations.
 
 ## Inbox processing
 
-Capture quickly in Inbox without forcing categorization. When asked to organize it, search existing notes first, update an appropriate canonical note where useful, and create a note only when necessary. Connect preserved material to relevant collections and resources. Remove processed Inbox items only after all useful content has been preserved and the owner has approved deletion; otherwise report them as ready for removal.
+Capture quickly in Inbox without forcing categorization. When asked to organize it, search existing notes first, update an appropriate canonical note where useful, and create a note only when necessary. Connect preserved material to relevant journey/project notes and resources. Remove processed Inbox items only after all useful content has been preserved and the owner has approved deletion; otherwise report them as ready for removal.
 
 ## Local operation and verification
 

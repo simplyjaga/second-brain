@@ -43,7 +43,7 @@ Then the loop:
 
 ## Related concepts
 
-## Collections
+## Projects / Journeys
 
 - [[Redis Internals]]
 

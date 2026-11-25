@@ -116,7 +116,7 @@ Only when $p_{correct}$ is so close to 1 that float32 can't tell it apart — lo
 
 ## Related concepts
 
-## Collections
+## Projects / Journeys
 
 ## Sources
 

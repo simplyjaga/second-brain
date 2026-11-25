@@ -47,7 +47,7 @@ The same trick works for any TCP protocol — e.g. `rediss://` is [[RESP]] + TLS
 - [[RESP]] — a sibling application protocol, also over TCP
 - [[TLS]] — the encryption layer that turns HTTP into HTTPS
 
-## Collections
+## Projects / Journeys
 
 - [[Redis Internals]]
 

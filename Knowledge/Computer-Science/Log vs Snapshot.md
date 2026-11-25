@@ -41,7 +41,7 @@ Systems that truly snapshot at high frequency (LSM-tree databases) cheat the sam
 - [[Processes Threads and Cores]] — fork()/copy-on-write is what makes snapshots cheap to take on Unix
 - [[Event Loop]] — durability work must not stall the serving thread; hence background threads/forks
 
-## Collections
+## Projects / Journeys
 
 ## Sources
 

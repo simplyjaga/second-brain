@@ -32,7 +32,7 @@ Before REST, most web APIs were remote procedure calls tunneled through [[HTTP]]
 - [[Protocol]] — the layering view that separates REST from HTTP/JSON/TLS
 - [[RESP]] — a protocol that is *not* REST at all
 
-## Collections
+## Projects / Journeys
 
 - [[Redis Internals]]
 

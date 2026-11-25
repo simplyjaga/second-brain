@@ -26,7 +26,7 @@ Triggering question: *can two threads of one process run in parallel on two diff
 
 - [[Event Loop]]
 
-## Collections
+## Projects / Journeys
 
 - [[Redis Internals]]
 

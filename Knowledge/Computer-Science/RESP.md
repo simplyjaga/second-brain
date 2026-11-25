@@ -49,7 +49,7 @@ These go to a client library (ioredis, redis-py, go-redis) in backend code — n
 - [[HTTP]] — sibling protocol over the same TCP pipe
 - [[Event Loop]] — how Redis serves many RESP conversations on one thread
 
-## Collections
+## Projects / Journeys
 
 - [[Redis Internals]]
 

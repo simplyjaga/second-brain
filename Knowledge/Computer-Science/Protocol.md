@@ -37,7 +37,7 @@ Machines can't infer meaning. The protocol is what lets a client send `GET /user
 - [[HTTP]] · [[RESP]] · [[TLS]] · [[REST]]
 - [[Event Loop]] — how servers handle many protocol conversations at once
 
-## Collections
+## Projects / Journeys
 
 - [[Redis Internals]]
 

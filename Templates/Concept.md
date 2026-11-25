@@ -10,7 +10,7 @@
 
 ## Related concepts
 
-## Collections
+## Projects / Journeys
 
 ## Projects
 

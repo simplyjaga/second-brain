@@ -15,7 +15,7 @@ My published article: question-led walkthrough from a blocking TCP server to an 
 - Python `selectors` server example, built step by step
 - How real servers layer threads/workers/multiple cores on top
 
-## Related knowledge and collections
+## Related knowledge and projects
 
 - [[Event Loop]], [[O]], [[epoll]], [[TCP Server]]
 - [[Redis Internals]]

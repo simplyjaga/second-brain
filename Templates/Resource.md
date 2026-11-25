@@ -10,4 +10,4 @@ kind: ""
 
 ## Useful sections / Timestamps
 
-## Related knowledge and collections
+## Related knowledge and projects

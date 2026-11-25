@@ -172,7 +172,7 @@ Not covered in the session — high level: remove the `is_end` flag, delete a le
 
 - [[Trie]]
 
-## Collections
+## Projects / Journeys
 
 - [[Redis Internals]] — Redis uses a radix tree (`rax`)
 
