@@ -33,8 +33,13 @@ Redis is in-memory; without persistence, a crash or restart loses everything. Th
 - RDB can lose minutes of data on crash; AOF `everysec` loses at most 1s.
 - `SAVE` is blocking — production uses `BGSAVE`.
 
+## Log vs snapshot
+
+RDB and AOF are concrete instances of the generic [[Log vs Snapshot]] trade-off — snapshot cost ∝ dataset size vs log cost ∝ mutation rate, which is why frequent RDB snapshots can't match AOF durability and why AOF needs rewrite/compaction.
+
 ## Related concepts
 
+- [[Log vs Snapshot]] — the general pattern this note instantiates
 - [[Processes Threads and Cores]] — fork/COW is process-level, not threads
 
 ## Collections
